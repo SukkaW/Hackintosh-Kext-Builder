@@ -70,7 +70,7 @@ jobs:
         xcodebuild -configuration Release -scheme BrcmPatchRAM
         cd build/Products/Release
         zip -qry BrcmPatchRAM-$(cat ../../../BrcmPatchRAM.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-RELEASE.zip *.kext
-        cd - && cd ..
+        cd $GITHUB_WORKSPACE
         cp BrcmPatchRAM/build/*/*.zip deploy/
     - name: Build OS-X-USB-Inject-All
       run: |
@@ -78,9 +78,10 @@ jobs:
         make clean
         make all
         make distribute
-        cp Distribute/*.zip ../deploy/
+        cp Distribute/*.zip $GITHUB_WORKSPACE/deploy/
     - name: Deploy
       run: |
+        cd $GITHUB_WORKSPACE
         cp -rf src/* deploy/
         cd deploy/
         tree --prune -H '.' -L 1 --noreport --charset utf-8 -P "*.zip" > index.html
