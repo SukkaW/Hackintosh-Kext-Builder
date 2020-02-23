@@ -21,12 +21,28 @@ jobs:
         ls -n /Applications/ | grep Xcode*
         sudo xcode-select -r
         mkdir -p deploy
-    - name: Build Lilu.kext
+    - name: Build Lilu
       run: |
-        git clone https://github.com/acidanthera/Lilu.git --depth=5 && cd Lilu
+        git clone https://github.com/acidanthera/Lilu.git --depth=10 && cd Lilu
         xcodebuild -configuration Debug > /dev/null 2>&1 ;
         xcodebuild -configuration Release > /dev/null 2>&1 ;
         cd ..
         cp Lilu/build/*/*.zip deploy/
+    - name: Build WhateverGreen
+      run: |
+        git clone https://github.com/acidanthera/WhateverGreen.git --depth=10 && cd WhateverGreen
+        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" || exit 1
+        xcodebuild -configuration Debug > /dev/null 2>&1 ;
+        xcodebuild -configuration Release > /dev/null 2>&1 ;
+        cd ..
+        cp WhateverGreen/build/*/*.zip deploy/
+    - name: Build VirtualSMC
+      run: |
+        git clone https://github.com/acidanthera/VirtualSMC.git --depth=10 && cd VirtualSMC
+        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" || exit 1
+        xcodebuild -target Package -configuration Debug
+        xcodebuild -target Package -configuration Release
+        cd ..
+        cp WhateverGreen/build/*/*.zip deploy/
     - name: List Deployment
       run: ls -n deploy
