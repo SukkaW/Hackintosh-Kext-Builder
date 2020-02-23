@@ -3,7 +3,7 @@ name: Hackintosh Kext Builder
 on:
   push:
     branches:
-        master
+      - master
   schedule:
     - cron: '0 22 * * *'
 
@@ -48,23 +48,23 @@ jobs:
       run: |
         git clone https://github.com/acidanthera/AppleALC.git --depth=10 && cd AppleALC
         src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" || exit 1
-        xcodebuild -target Package -configuration Debug
-        xcodebuild -target Package -configuration Release
+        xcodebuild -configuration Debug
+        xcodebuild -configuration Release
         cd ..
         cp AppleALC/build/*/*.zip deploy/
     - name: Build AirportBrcmFixup
       run: |
         git clone https://github.com/acidanthera/AirportBrcmFixup.git --depth=10 && cd AirportBrcmFixup
         src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" || exit 1
-        xcodebuild -target Package -configuration Debug
-        xcodebuild -target Package -configuration Release
+        xcodebuild -configuration Debug
+        xcodebuild -configuration Release
         cd ..
         cp AirportBrcmFixup/build/*/*.zip deploy/
     - name: Build VoodooPS2
       run: |
         git clone https://github.com/acidanthera/VoodooPS2.git --depth=10 && cd VoodooPS2
-        xcodebuild -target Package -configuration Debug
-        xcodebuild -target Package -configuration Release
+        xcodebuild -configuration Debug
+        xcodebuild -configuration Release
         cd ..
         cp VoodooPS2/build/*/*.zip deploy/
     - name: Build BrcmPatchRAM
