@@ -70,7 +70,7 @@ jobs:
         xcodebuild -configuration Release -scheme BrcmPatchRAM
         cd build/Products/Release
         zip -qry BrcmPatchRAM-$(cat ../../../BrcmPatchRAM.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-RELEASE.zip *.kext
-        cd -
+        cd - && cd ..
         cp BrcmPatchRAM/build/*/*.zip deploy/
     - name: Build OS-X-USB-Inject-All
       run: |
