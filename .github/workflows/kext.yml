@@ -3,7 +3,7 @@ name: Hackintosh Kext Builder
 on:
   push:
     branches:
-      - master
+        master
   schedule:
     - cron: '0 22 * * *'
 
@@ -44,5 +44,68 @@ jobs:
         xcodebuild -target Package -configuration Release
         cd ..
         cp WhateverGreen/build/*/*.zip deploy/
-    - name: List Deployment
-      run: ls -n deploy
+    - name: Build AppleALC
+      run: |
+        git clone https://github.com/acidanthera/AppleALC.git --depth=10 && cd AppleALC
+        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" || exit 1
+        xcodebuild -target Package -configuration Debug
+        xcodebuild -target Package -configuration Release
+        cd ..
+        cp AppleALC/build/*/*.zip deploy/
+    - name: Build AirportBrcmFixup
+      run: |
+        git clone https://github.com/acidanthera/AirportBrcmFixup.git --depth=10 && cd AirportBrcmFixup
+        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" || exit 1
+        xcodebuild -target Package -configuration Debug
+        xcodebuild -target Package -configuration Release
+        cd ..
+        cp AirportBrcmFixup/build/*/*.zip deploy/
+    - name: Build VoodooPS2
+      run: |
+        git clone https://github.com/acidanthera/VoodooPS2.git --depth=10 && cd VoodooPS2
+        xcodebuild -target Package -configuration Debug
+        xcodebuild -target Package -configuration Release
+        cd ..
+        cp VoodooPS2/build/*/*.zip deploy/
+    - name: Build BrcmPatchRAM
+      run: |
+        git clone https://github.com/acidanthera/BrcmPatchRAM.git --depth=10 && cd BrcmPatchRAM
+        xcodebuild -configuration Debug -scheme BrcmPatchRAM
+        cd build/Products/Debug
+        zip -qry BrcmPatchRAM-$(cat ../../../BrcmPatchRAM.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-DEBUG.zip *.kext
+        cd -
+        xcodebuild -configuration Release -scheme BrcmPatchRAM
+        cd build/Products/Release
+        zip -qry BrcmPatchRAM-$(cat ../../../BrcmPatchRAM.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-RELEASE.zip *.kext
+        cd -
+        cp BrcmPatchRAM/build/*/*.zip deploy/
+    - name: Build OS-X-USB-Inject-All
+      run: |
+        git clone https://github.com/Sniki/OS-X-USB-Inject-All.git --depth=10 && cd OS-X-USB-Inject-All
+        make clean
+        make all
+        make distribute
+        cp Distribute/*.zip ../deploy/
+    - name: Deploy
+      run: |
+        cp -rf src/* deploy/
+        cd deploy/
+        tree --prune -H '.' -L 1 --noreport --charset utf-8 -P "*.zip" > index.html
+        cd ..
+        mkdir ./public-git
+        cd ./public-git
+        git init
+        git config --global push.default matching
+        git config --global user.email "${GITHUB_EMAIL}"
+        git config --global user.name "${GITHUB_USER}"
+        git remote add origin https://${GITHUB_TOKEN}@github.com/SukkaW/Hackintosh-Kext-Builder.git
+        git checkout -b gh-pages
+        cp -rf ../deploy/* ./
+        git add --all .
+        DATE="$(echo $(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S'))"
+        git commit -m "Deploy: $DATE"
+        git push --quiet --force origin HEAD:gh-pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_USER: ${{ secrets.GITHUB_USER }}
+        GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
