@@ -60,13 +60,6 @@ jobs:
         xcodebuild -configuration Release
         cd ..
         cp AirportBrcmFixup/build/*/*.zip deploy/
-    - name: Build VoodooPS2
-      run: |
-        git clone https://github.com/acidanthera/VoodooPS2.git --depth=10 && cd VoodooPS2
-        xcodebuild -configuration Debug
-        xcodebuild -configuration Release
-        cd ..
-        cp VoodooPS2/build/*/*.zip deploy/
     - name: Build BrcmPatchRAM
       run: |
         git clone https://github.com/acidanthera/BrcmPatchRAM.git --depth=10 && cd BrcmPatchRAM
@@ -96,16 +89,16 @@ jobs:
         cd ./public-git
         git init
         git config --global push.default matching
-        git config --global user.email "${GITHUB_EMAIL}"
-        git config --global user.name "${GITHUB_USER}"
-        git remote add origin https://${GITHUB_TOKEN}@github.com/SukkaW/Hackintosh-Kext-Builder.git
-        git checkout -b gh-pages
+        git config --global user.email "${GIT_EMAIL}"
+        git config --global user.name "${GIT_USERNAME}"
+        git remote add origin ${REMOTE_REPO}
+        git checkout -b master
         cp -rf ../deploy/* ./
         git add --all .
         DATE="$(echo $(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S'))"
         git commit -m "Deploy: $DATE"
-        git push --quiet --force origin HEAD:gh-pages
+        git push --quiet --force origin HEAD:master
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        GITHUB_USER: ${{ secrets.GITHUB_USER }}
-        GITHUB_EMAIL: ${{ secrets.GITHUB_EMAIL }}
+        GIT_EMAIL: ${{ secrets.TOKEN }}
+        GIT_USERNAME: ${{ secrets.GITHUB_USER }}
+        REMOTE_REPO: ${{ secrets.GITHUB_EMAIL }}
