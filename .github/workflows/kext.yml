@@ -19,7 +19,7 @@ jobs:
     - name: List & Rest Xcode
       run: |
         echo $GITHUB_WORKSPACE
-        which brew
+        brew install tree
         ls -n /Applications/ | grep Xcode*
         sudo xcode-select -r
         mkdir -p deploy
