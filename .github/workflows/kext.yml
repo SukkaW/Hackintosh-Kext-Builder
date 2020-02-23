@@ -16,12 +16,17 @@ jobs:
       uses: actions/checkout@v2
       with:
         persist-credentials: false
-    - name: Reset Xcode
+    - name: List & Rest Xcode
       run: |
         ls -n /Applications/ | grep Xcode*
         sudo xcode-select -r
         mkdir -p deploy
     - name: Build Lilu.kext
-      run: chmod +x lilu.sh && bash lilu.sh
+      run: |
+        git clone https://github.com/acidanthera/Lilu.git --depth=5 && cd Lilu
+        xcodebuild -configuration Debug > /dev/null 2>&1 ;
+        xcodebuild -configuration Release > /dev/null 2>&1 ;
+        cd ..
+        cp Lilu/build/*/*.zip deploy/
     - name: List Deployment
       run: ls -n deploy
