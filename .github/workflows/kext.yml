@@ -99,6 +99,6 @@ jobs:
         git commit -m "Deploy: $DATE"
         git push --quiet --force origin HEAD:master
       env:
-        GIT_EMAIL: ${{ secrets.TOKEN }}
-        GIT_USERNAME: ${{ secrets.GITHUB_USER }}
-        REMOTE_REPO: ${{ secrets.GITHUB_EMAIL }}
+        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        REMOTE_REPO: ${{ secrets.REMOTE_REPO }}
