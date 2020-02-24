@@ -45,9 +45,9 @@ jobs:
         cp -rf src/* deploy/
         cd deploy/
         tree --prune -H '.' -L 4 --noreport --charset utf-8 -P "*.zip" > index.html
-        gsed -i 's|<title>Directory Tree</title>|<title>黑苹果 常用 Kext 下载站（每日构建） \| Sukka</title>|g' ./index.html
-        gsed -i 's|<h1>Directory Tree</h1>|<h1>黑苹果 常用 Kext 下载站（每日构建）</h1>|g' ./index.html
-        gsed -i 's|<a href=".">.</a><br>|<p>最后更新于 {{DATE}}</p><br><a href="/">https://kext.skk.moe</a><br>|g' ./index.html
+        gsed -i 's|<title>Directory Tree</title>|<title>黑苹果 常用 Kext 下载站（每日更新） \| Sukka</title>|g' ./index.html
+        gsed -i 's|<h1>Directory Tree</h1>|<h1>黑苹果 常用 Kext 下载站（每日更新）</h1>|g' ./index.html
+        gsed -i 's|<a href=".">.</a><br>|<p>最后更新于 {{DATE}}</p><br><p>Nightly 目录下的驱动为「每夜版」，每天从 GitHub 拉取 master 分支最新源码并使用 Xcode 11 构建</p><p>Stable 目录下的驱动为开发者发布的「正式版」，每天从 GitHub / BitBucket 拉取 Release 的 zip 文件</p><br><a href="/">https://kext.skk.moe</a><br>|g' ./index.html
         gsed -i "s|{{DATE}}|$DATE|g" ./index.html
         gsed -i 's|<p class="VERSION">|<p class="VERSION"><strong style="font-size:120%">Made by <a href="https://skk.moe">Sukka</a> with Love<br></strong>|g' ./index.html
     - name: Deploy
