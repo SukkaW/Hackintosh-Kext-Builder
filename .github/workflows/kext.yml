@@ -113,6 +113,7 @@ jobs:
         gsed -i 's|<h1>Directory Tree</h1>|<h1>黑苹果 常用 Kext 下载站（每日构建）</h1>|g' ./index.html
         gsed -i 's|<a href=".">.</a><br>|<p>最后更新于 {{DATE}}</p><br><a href="/">https://kext.skk.moe</a><br>|g' ./index.html
         gsed -i "s|{{DATE}}|$DATE|g" ./index.html
+        gsed -i 's|<p class="VERSION">|<p class="VERSION"><strong style="font-size:120%">Made by <a href="https://skk.moe">Sukka</a> with Love<br></strong>|g' ./index.html
     - name: Deploy
       run: |
         cd $GITHUB_WORKSPACE
