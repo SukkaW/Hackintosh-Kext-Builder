@@ -108,7 +108,7 @@ jobs:
         cd $GITHUB_WORKSPACE
         cp -rf src/* deploy/
         cd deploy/
-        tree --prune -H '.' -L 2 --noreport --charset utf-8 -P "*.zip" > index.html
+        tree --prune -H '.' -L 4 --noreport --charset utf-8 -P "*.zip" > index.html
         gsed -i 's|<title>Directory Tree</title>|<title>黑苹果 常用 Kext 下载站（每日构建） \| Sukka</title>|g' ./index.html
         gsed -i 's|<h1>Directory Tree</h1>|<h1>黑苹果 常用 Kext 下载站（每日构建）</h1>|g' ./index.html
         gsed -i 's|<a href=".">.</a><br>|<p>最后更新于 {{DATE}}</p><br><a href="/">https://kext.skk.moe</a><br>|g' ./index.html
