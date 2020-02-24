@@ -21,28 +21,23 @@ jobs:
         brew install tree
         brew install gnu-sed
         chmod +x build/*.sh
+        chmod +x download/*.sh
     - name: Prepare enviroment
       run: |
         echo $GITHUB_WORKSPACE
         ls -n /Applications/ | grep Xcode*
         sudo xcode-select -r
         mkdir -p deploy
-    - name: Build Lilu
-      run: bash ./build/Lilu.sh
-    - name: Build WhateverGreen
-      run: bash ./build/WhateverGreen.sh
-    - name: Build VirtualSMC
-      run: bash ./build/VirtualSMC.sh
-    - name: Build AppleALC
-      run: bash ./build/AppleALC.sh
-    - name: Build AirportBrcmFixup
-      run: bash ./build/AirportBrcmFixup.sh
-    - name: Build BrcmPatchRAM
-      run: bash ./build/BrcmPatchRAM.sh
-    - name: Build AppleIntelWifiAdapter
-      run: bash ./build/AppleIntelWifiAdapter.sh
-    - name: Build OS-X-USB-Inject-All
-      run: bash ./build/OS-X-USB-Inject-All.sh
+    - name: Build Nightly Kext
+      run: |
+        for f in build/*.sh; do
+          bash "$f" || break
+        done
+    - name: Download ACPIBacklight
+      run: |
+        for f in download/*.sh; do
+          bash "$f" || break
+        done
     - name: Generate HTML
       run: |
         cd $GITHUB_WORKSPACE

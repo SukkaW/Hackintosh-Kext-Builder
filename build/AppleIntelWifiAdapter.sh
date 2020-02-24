@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "=====> Building AppleIntelWifiAdapter.kext"
+
 cd $GITHUB_WORKSPACE
 git clone -b feature-rewrite-all https://github.com/zxystd/AppleIntelWifiAdapter.git --depth=10 && cd AppleIntelWifiAdapter
 xcodebuild -configuration Debug >/dev/null 2>&1

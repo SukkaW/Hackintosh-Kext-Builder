@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "=====> Building BrcmPatchRAM.kext"
+
 cd $GITHUB_WORKSPACE
 git clone https://github.com/acidanthera/BrcmPatchRAM.git --depth=10 && cd BrcmPatchRAM
 xcodebuild -configuration Debug -scheme BrcmPatchRAM >/dev/null 2>&1

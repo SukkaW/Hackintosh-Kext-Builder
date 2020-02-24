@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "=====> Building Lilu.kext"
+
 cd $GITHUB_WORKSPACE
 git clone https://github.com/acidanthera/Lilu.git --depth=10 && cd Lilu
 xcodebuild -configuration Debug >/dev/null 2>&1
