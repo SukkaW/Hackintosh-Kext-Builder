@@ -16,96 +16,37 @@ jobs:
       uses: actions/checkout@v2
       with:
         persist-credentials: false
-    - name: List & Rest Xcode
+    - name: Install dependencies
       run: |
-        echo $GITHUB_WORKSPACE
         brew install tree
         brew install gnu-sed
+        chmod +x build/*.sh
+    - name: Prepare enviroment
+      run: |
+        echo $GITHUB_WORKSPACE
         ls -n /Applications/ | grep Xcode*
         sudo xcode-select -r
         mkdir -p deploy
     - name: Build Lilu
-      run: |
-        git clone https://github.com/acidanthera/Lilu.git --depth=10 && cd Lilu
-        xcodebuild -configuration Debug > /dev/null 2>&1 ;
-        xcodebuild -configuration Release > /dev/null 2>&1 ;
-        cd ..
-        mkdir -p deploy/Nightly/AppleALC
-        cp Lilu/build/*/*.zip deploy/Nightly/AppleALC/
+      run: bash ./build/Lilu.sh
     - name: Build WhateverGreen
-      run: |
-        git clone https://github.com/acidanthera/WhateverGreen.git --depth=10 && cd WhateverGreen
-        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" > /dev/null 2>&1 || exit 1
-        xcodebuild -configuration Debug > /dev/null 2>&1 ;
-        xcodebuild -configuration Release > /dev/null 2>&1 ;
-        cd ..
-        mkdir -p deploy/Nightly/WhateverGreen
-        cp WhateverGreen/build/*/*.zip deploy/Nightly/WhateverGreen/
+      run: bash ./build/WhateverGreen.sh
     - name: Build VirtualSMC
-      run: |
-        git clone https://github.com/acidanthera/VirtualSMC.git --depth=10 && cd VirtualSMC
-        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" > /dev/null 2>&1 || exit 1
-        xcodebuild -target Package -configuration Debug > /dev/null 2>&1 ;
-        xcodebuild -target Package -configuration Release > /dev/null 2>&1 ;
-        cd ..
-        mkdir -p deploy/Nightly/VirtualSMC
-        cp VirtualSMC/build/*/*.zip deploy/Nightly/VirtualSMC/
+      run: bash ./build/VirtualSMC.sh
     - name: Build AppleALC
-      run: |
-        git clone https://github.com/acidanthera/AppleALC.git --depth=10 && cd AppleALC
-        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" > /dev/null 2>&1 || exit 1
-        xcodebuild -configuration Debug > /dev/null 2>&1 ;
-        xcodebuild -configuration Release > /dev/null 2>&1 ;
-        cd ..
-        mkdir -p deploy/Nightly/AppleALC
-        cp AppleALC/build/*/*.zip deploy/Nightly/AppleALC/
+      run: bash ./build/AppleALC.sh
     - name: Build AirportBrcmFixup
-      run: |
-        git clone https://github.com/acidanthera/AirportBrcmFixup.git --depth=10 && cd AirportBrcmFixup
-        src=$(/usr/bin/curl -Lfs https://raw.githubusercontent.com/acidanthera/Lilu/master/Lilu/Scripts/bootstrap.sh) && eval "$src" > /dev/null 2>&1 || exit 1
-        xcodebuild -configuration Debug > /dev/null 2>&1 ;
-        xcodebuild -configuration Release > /dev/null 2>&1 ;
-        cd ..
-        mkdir -p deploy/Nightly/AirportBrcmFixup
-        cp AirportBrcmFixup/build/*/*.zip deploy/Nightly/AirportBrcmFixup/
+      run: bash ./build/AirportBrcmFixup.sh
     - name: Build BrcmPatchRAM
-      run: |
-        git clone https://github.com/acidanthera/BrcmPatchRAM.git --depth=10 && cd BrcmPatchRAM
-        xcodebuild -configuration Debug -scheme BrcmPatchRAM > /dev/null 2>&1 ;
-        cd build/Products/Debug
-        zip -qry BrcmPatchRAM-$(cat ../../../BrcmPatchRAM.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-DEBUG.zip *.kext
-        cd -
-        xcodebuild -configuration Release -scheme BrcmPatchRAM > /dev/null 2>&1 ;
-        cd build/Products/Release
-        zip -qry BrcmPatchRAM-$(cat ../../../BrcmPatchRAM.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-RELEASE.zip *.kext
-        cd $GITHUB_WORKSPACE
-        mkdir -p deploy/Nightly/BrcmPatchRAM
-        cp BrcmPatchRAM/build/Products/*/*.zip deploy/Nightly/BrcmPatchRAM/
+      run: bash ./build/BrcmPatchRAM.sh
     - name: Build AppleIntelWifiAdapter
-      run: |
-        git clone -b feature-rewrite-all https://github.com/zxystd/AppleIntelWifiAdapter.git --depth=10 && cd AppleIntelWifiAdapter
-        xcodebuild -configuration Debug > /dev/null 2>&1 ;
-        xcodebuild -configuration Release > /dev/null 2>&1 ;
-        cd build/Debug
-        zip -qry AppleIntelWifiAdapter-$(cat ../../AppleIntelWifiAdapter.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-DEBUG.zip *.kext
-        cd -
-        cd build/Release
-        zip -qry AppleIntelWifiAdapter-$(cat ../../AppleIntelWifiAdapter.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-RELEASE.zip *.kext
-        cd $GITHUB_WORKSPACE
-        mkdir -p deploy/Nightly/AppleIntelWifiAdapter
-        cp AppleIntelWifiAdapter/build/*/*.zip deploy/Nightly/AppleIntelWifiAdapter/
+      run: bash ./build/AppleIntelWifiAdapter.sh
     - name: Build OS-X-USB-Inject-All
-      run: |
-        git clone https://github.com/Sniki/OS-X-USB-Inject-All.git --depth=10 && cd OS-X-USB-Inject-All
-        make clean
-        make all > /dev/null 2>&1 ;
-        make distribute
-        mkdir -p $GITHUB_WORKSPACE/deploy/Nightly/AppleIntelWifiAdapter
-        cp Distribute/*.zip $GITHUB_WORKSPACE/deploy/Nightly/AppleIntelWifiAdapter
+      run: bash ./build/OS-X-USB-Inject-All.sh
     - name: Generate HTML
       run: |
-        DATE="$(echo $(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S'))"
         cd $GITHUB_WORKSPACE
+        DATE="$(echo $(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S'))"
         cp -rf src/* deploy/
         cd deploy/
         tree --prune -H '.' -L 4 --noreport --charset utf-8 -P "*.zip" > index.html
