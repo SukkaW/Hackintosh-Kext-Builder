@@ -30,7 +30,8 @@ jobs:
         xcodebuild -configuration Debug > /dev/null 2>&1 ;
         xcodebuild -configuration Release > /dev/null 2>&1 ;
         cd ..
-        cp Lilu/build/*/*.zip deploy/
+        mkdir -p deploy/Nightly/AppleALC
+        cp Lilu/build/*/*.zip deploy/Nightly/AppleALC/
     - name: Build WhateverGreen
       run: |
         git clone https://github.com/acidanthera/WhateverGreen.git --depth=10 && cd WhateverGreen
@@ -38,7 +39,8 @@ jobs:
         xcodebuild -configuration Debug > /dev/null 2>&1 ;
         xcodebuild -configuration Release > /dev/null 2>&1 ;
         cd ..
-        cp WhateverGreen/build/*/*.zip deploy/
+        mkdir -p deploy/Nightly/WhateverGreen
+        cp WhateverGreen/build/*/*.zip deploy/Nightly/WhateverGreen/
     - name: Build VirtualSMC
       run: |
         git clone https://github.com/acidanthera/VirtualSMC.git --depth=10 && cd VirtualSMC
@@ -46,7 +48,8 @@ jobs:
         xcodebuild -target Package -configuration Debug > /dev/null 2>&1 ;
         xcodebuild -target Package -configuration Release > /dev/null 2>&1 ;
         cd ..
-        cp WhateverGreen/build/*/*.zip deploy/
+        mkdir -p deploy/Nightly/VirtualSMC
+        cp VirtualSMC/build/*/*.zip deploy/Nightly/VirtualSMC/
     - name: Build AppleALC
       run: |
         git clone https://github.com/acidanthera/AppleALC.git --depth=10 && cd AppleALC
@@ -54,7 +57,8 @@ jobs:
         xcodebuild -configuration Debug > /dev/null 2>&1 ;
         xcodebuild -configuration Release > /dev/null 2>&1 ;
         cd ..
-        cp AppleALC/build/*/*.zip deploy/
+        mkdir -p deploy/Nightly/AppleALC
+        cp AppleALC/build/*/*.zip deploy/Nightly/AppleALC/
     - name: Build AirportBrcmFixup
       run: |
         git clone https://github.com/acidanthera/AirportBrcmFixup.git --depth=10 && cd AirportBrcmFixup
@@ -62,7 +66,8 @@ jobs:
         xcodebuild -configuration Debug > /dev/null 2>&1 ;
         xcodebuild -configuration Release > /dev/null 2>&1 ;
         cd ..
-        cp AirportBrcmFixup/build/*/*.zip deploy/
+        mkdir -p deploy/Nightly/AirportBrcmFixup
+        cp AirportBrcmFixup/build/*/*.zip deploy/Nightly/AirportBrcmFixup/
     - name: Build BrcmPatchRAM
       run: |
         git clone https://github.com/acidanthera/BrcmPatchRAM.git --depth=10 && cd BrcmPatchRAM
@@ -74,7 +79,8 @@ jobs:
         cd build/Products/Release
         zip -qry BrcmPatchRAM-$(cat ../../../BrcmPatchRAM.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-RELEASE.zip *.kext
         cd $GITHUB_WORKSPACE
-        cp BrcmPatchRAM/build/Products/*/*.zip deploy/
+        mkdir -p deploy/Nightly/BrcmPatchRAM
+        cp BrcmPatchRAM/build/Products/*/*.zip deploy/Nightly/BrcmPatchRAM/
     - name: Build AppleIntelWifiAdapter
       run: |
         git clone -b feature-rewrite-all https://github.com/zxystd/AppleIntelWifiAdapter.git --depth=10 && cd AppleIntelWifiAdapter
@@ -86,14 +92,16 @@ jobs:
         cd build/Release
         zip -qry AppleIntelWifiAdapter-$(cat ../../AppleIntelWifiAdapter.xcodeproj/project.pbxproj | grep -i 'CURRENT_PROJECT_VERSION' | head -1 | grep -oE '\d\.\d\.\d')-RELEASE.zip *.kext
         cd $GITHUB_WORKSPACE
-        cp AppleIntelWifiAdapter/build/*/*.zip deploy/
+        mkdir -p deploy/Nightly/AppleIntelWifiAdapter
+        cp AppleIntelWifiAdapter/build/*/*.zip deploy/Nightly/AppleIntelWifiAdapter/
     - name: Build OS-X-USB-Inject-All
       run: |
         git clone https://github.com/Sniki/OS-X-USB-Inject-All.git --depth=10 && cd OS-X-USB-Inject-All
         make clean
         make all > /dev/null 2>&1 ;
         make distribute
-        cp Distribute/*.zip $GITHUB_WORKSPACE/deploy/
+        mkdir -p $GITHUB_WORKSPACE/deploy/Nightly/AppleIntelWifiAdapter
+        cp Distribute/*.zip $GITHUB_WORKSPACE/deploy/Nightly/AppleIntelWifiAdapter
     - name: Generate HTML
       run: |
         DATE="$(echo $(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S'))"
@@ -103,7 +111,8 @@ jobs:
         tree --prune -H '.' -L 2 --noreport --charset utf-8 -P "*.zip" > index.html
         gsed -i 's|<title>Directory Tree</title>|<title>黑苹果 常用 Kext 下载站（每日构建） \| Sukka</title>|g' ./index.html
         gsed -i 's|<h1>Directory Tree</h1>|<h1>黑苹果 常用 Kext 下载站（每日构建）</h1>|g' ./index.html
-        gsed -i 's|<a href=".">.</a><br>|<p>最后更新于 $DATE</p><p>所有文件均由下列 GitHub 仓库 master 分支的最新代码、使用 GitHub Actions 和 Xcode 11 每日构建</p><ul><li><a href="https://github.com/acidanthera/AirportBrcmFixup" target="_blank" rel="noreferrer nofollow noopener">AirportBrcmFixup @ GitHub</a></li><li><a href="https://github.com/acidanthera/AppleALC" target="_blank" rel="noreferrer nofollow noopener">AppleALC @ GitHub</a></li><li><a href="https://github.com/zxystd/AppleIntelWifiAdapter/tree/feature-rewrite-all" target="_blank" rel="noreferrer nofollow noopener">AppleIntelWifiAdapter @ GitHub</a></li><li><a href="https://github.com/acidanthera/BrcmPatchRAM" target="_blank" rel="noreferrer nofollow noopener">BrcmPatchRAM @ GitHub</a></li><li><a href="https://github.com/acidanthera/Lilu" target="_blank" rel="noreferrer nofollow noopener">Lilu @ GitHub</a></li><li><a href="https://github.com/Sniki/OS-X-USB-Inject-All" target="_blank" rel="noreferrer nofollow noopener">USBInjectAll @ GitHub</a></li><li><a href="https://github.com/acidanthera/WhateverGreen" target="_blank" rel="noreferrer nofollow noopener">WhateverGreen @ GitHub</a></li></ul><a href="/">https://kext.skk.moe</a><br>|g' ./index.html
+        gsed -i 's|<a href=".">.</a><br>|<p>最后更新于 {{DATE}}</p><br><a href="/">https://kext.skk.moe</a><br>|g' ./index.html
+        gsed -i "s|{{DATE}}|$DATE|g" ./index.html
     - name: Deploy
       run: |
         cd $GITHUB_WORKSPACE
