@@ -9,4 +9,4 @@ xcodebuild -configuration Debug >/dev/null 2>&1
 xcodebuild -configuration Release >/dev/null 2>&1
 cd ..
 mkdir -p deploy/Nightly/VoodooPS2
-cp VoodooPS2/build/*/*.zip deploy/Nightly/VoodooPS2/
+cp VoodooPS2/build/Products/*/*.zip deploy/Nightly/VoodooPS2/
