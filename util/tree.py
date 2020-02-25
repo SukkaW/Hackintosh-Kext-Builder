@@ -134,7 +134,7 @@ def process_dir(top_dir, opts):
             if not opts.dryrun:
                 index_file.write(
                     """
-       <li><a style="display:block; width:100%" href="{link}">&#128193; {link_text}</a></li>""".format(
+       <li><a style="display:block; width:100%" href="{link}/">&#128193; {link_text}</a></li>""".format(
                         link=dirname, link_text=dirname
                     )
                 )
