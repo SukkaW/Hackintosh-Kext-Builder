@@ -34,7 +34,7 @@ jobs:
         for f in build/*.sh; do
           bash "$f" || break
         done
-    - name: Download Stable Kext
+    - name: Download Files
       run: |
         for f in download/*.sh; do
           bash "$f" || break
