@@ -53,7 +53,6 @@ jobs:
         mkdir ./public-git
         cd ./public-git
         git init
-        git config --global push.default matching
         git config --global user.email "${GIT_EMAIL}"
         git config --global user.name "${GIT_USERNAME}"
         git remote add origin ${REMOTE_REPO}
